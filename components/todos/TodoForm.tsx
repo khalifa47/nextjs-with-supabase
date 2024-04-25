@@ -54,7 +54,10 @@ const TodoForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-80 mx-auto space-y-8"
+      >
         <FormField
           control={form.control}
           name="title"
@@ -93,7 +96,9 @@ const TodoForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="w-full">
+          Submit
+        </Button>
       </form>
     </Form>
   );
