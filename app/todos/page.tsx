@@ -4,6 +4,8 @@ import TodoForm from "@/components/todos/TodoForm";
 import TodoList from "@/components/todos/TodoList";
 import { Separator } from "@/components/ui/separator";
 
+// TODO: introduce context to update state immediately
+
 export default async function TodosPage() {
   const supabase = createClient();
 
