@@ -16,7 +16,7 @@ const TodoList = ({ todos }: { todos: Todo[] }) => {
     (acc, val) => (val.done_at ? acc + 1 : acc),
     0
   );
-  const percentage = (completedCount / todos.length) * 100;
+  const percentage = Math.floor((completedCount / todos.length) * 100);
   return (
     <div className="container w-full m-2">
       {todos.length > 0 ? (

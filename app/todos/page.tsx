@@ -17,11 +17,27 @@ export default async function TodosPage() {
     return redirect("/login");
   }
 
-  const { data: todos, error } = await supabase.from("todos").select("*");
+  const { data: todos, error } = await supabase
+    .from("todos")
+    .select("*")
+    .order("priority", { ascending: false });
 
   if (error) {
     throw new Error(error.message);
   }
+
+  todos.sort((a, b) => {
+    const aIsNull = a.done_at === null;
+    const bIsNull = b.done_at === null;
+
+    if (aIsNull && !bIsNull) {
+      return -1;
+    } else if (!aIsNull && bIsNull) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
 
   console.log(todos);
 
