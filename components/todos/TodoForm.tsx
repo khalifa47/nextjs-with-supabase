@@ -18,6 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(2),
@@ -28,6 +30,8 @@ const formSchema = z.object({
 });
 
 const TodoForm = () => {
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,6 +41,7 @@ const TodoForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
     const supabase = createClient();
 
     const { data: newTodo, error } = await supabase
@@ -46,10 +51,12 @@ const TodoForm = () => {
 
     if (error) {
       form.setError("root", error);
+      setLoading(false);
       return;
     }
 
     console.log(newTodo[0]);
+    setLoading(false);
   };
 
   return (
@@ -96,7 +103,8 @@ const TodoForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Submit
         </Button>
       </form>
