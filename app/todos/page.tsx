@@ -24,7 +24,7 @@ export default async function TodosPage() {
   console.log(todos);
 
   return (
-    <div className="container flex items-center flex-col-reverse md:flex-row">
+    <div className="w-full max-w-4xl flex items-center flex-col-reverse md:flex-row">
       <div className="flex flex-col md:flex-row items-center">
         <Separator orientation="horizontal" className="mx-2 block md:hidden" />
         <TodoForm />
