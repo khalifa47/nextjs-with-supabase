@@ -2,7 +2,7 @@ import { Progress } from "../ui/progress";
 import TodoItem from "./TodoItem";
 
 const KeyGuide = () => (
-  <p className="flex gap-2 text-sm mb-2">
+  <p className="flex gap-2 text-sm">
     <span className="text-red-400">• Critical</span>
     <span className="text-orange-400">• Important</span>
     <span className="text-yellow-400">• Neutral</span>
@@ -32,9 +32,11 @@ const TodoList = ({ todos }: { todos: Todo[] }) => {
 
           <KeyGuide />
 
-          {todos.map((todo) => (
-            <TodoItem key={todo.id} todoItem={todo} />
-          ))}
+          <div className="my-4 space-y-2">
+            {todos.map((todo) => (
+              <TodoItem key={todo.id} todoItem={todo} />
+            ))}
+          </div>
         </>
       ) : (
         <h1 className="text-xl text-center font-semibold">
