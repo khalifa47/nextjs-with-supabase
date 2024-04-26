@@ -9,6 +9,7 @@ import {
   Undo2Icon,
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { useTodos } from "@/lib/hooks";
 
 type Purpose = "check" | "edit" | "delete" | "undo";
 
@@ -18,6 +19,8 @@ type Props = {
 };
 
 const LoadingIconButton = ({ id, purpose }: Props) => {
+  const { setTodos } = useTodos();
+
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
 
@@ -33,20 +36,28 @@ const LoadingIconButton = ({ id, purpose }: Props) => {
     if (error) {
       setLoading(false);
       throw new Error(error.message);
+    } else {
+      setTodos((prev) => {
+        const index = prev.findIndex((todo) => todo.id === id);
+        const newTodos = [...prev];
+        newTodos[index] = newTodo[0];
+        return newTodos;
+      });
     }
 
-    console.log(newTodo[0]);
     setLoading(false);
   };
 
   const handleDelete = async () => {
     setLoading(true);
 
-    const { error } = await supabase.from("countries").delete().eq("id", 1);
+    const { error } = await supabase.from("todos").delete().eq("id", id);
 
     if (error) {
       setLoading(false);
       throw new Error(error.message);
+    } else {
+      setTodos((prev) => prev.filter((todo) => todo.id !== id));
     }
 
     setLoading(false);

@@ -3,8 +3,7 @@ import { redirect } from "next/navigation";
 import TodoForm from "@/components/todos/TodoForm";
 import TodoList from "@/components/todos/TodoList";
 import { Separator } from "@/components/ui/separator";
-
-// TODO: introduce context to update state immediately
+import TodoProvider from "@/components/providers/TodoProvider";
 
 export default async function TodosPage() {
   const supabase = createClient();
@@ -39,19 +38,22 @@ export default async function TodosPage() {
     }
   });
 
-  console.log(todos);
-
   return (
     <div className="w-full max-w-4xl flex items-center flex-col-reverse md:flex-row">
-      <div className="flex flex-col md:flex-row items-center">
-        <Separator orientation="horizontal" className="mx-2 block md:hidden" />
-        <TodoForm />
-        <Separator
-          orientation="vertical"
-          className="min-h-[calc(100vh-4rem)] ml-5 hidden md:block"
-        />
-      </div>
-      <TodoList todos={todos} />
+      <TodoProvider initialTodos={todos}>
+        <div className="flex flex-col md:flex-row items-center">
+          <Separator
+            orientation="horizontal"
+            className="mx-2 block md:hidden"
+          />
+          <TodoForm />
+          <Separator
+            orientation="vertical"
+            className="min-h-[calc(100vh-4rem)] ml-5 hidden md:block"
+          />
+        </div>
+        <TodoList />
+      </TodoProvider>
     </div>
   );
 }

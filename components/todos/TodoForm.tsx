@@ -20,6 +20,7 @@ import {
 import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useTodos } from "@/lib/hooks";
 
 const formSchema = z.object({
   title: z.string().min(2),
@@ -31,6 +32,7 @@ const formSchema = z.object({
 
 const TodoForm = () => {
   const [loading, setLoading] = useState(false);
+  const { setTodos } = useTodos();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,9 +55,9 @@ const TodoForm = () => {
       form.setError("root", error);
       setLoading(false);
       return;
+    } else {
+      setTodos((prev) => [...prev, newTodo[0]]);
     }
-
-    console.log(newTodo[0]);
     setLoading(false);
   };
 

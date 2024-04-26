@@ -1,3 +1,5 @@
+"use client";
+import { useTodos } from "@/lib/hooks";
 import { Progress } from "../ui/progress";
 import TodoItem from "./TodoItem";
 
@@ -11,7 +13,9 @@ const KeyGuide = () => (
   </p>
 );
 
-const TodoList = ({ todos }: { todos: Todo[] }) => {
+const TodoList = () => {
+  const { todos } = useTodos();
+
   const completedCount = todos.reduce(
     (acc, val) => (val.done_at ? acc + 1 : acc),
     0

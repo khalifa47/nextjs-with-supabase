@@ -6,3 +6,8 @@ type Todo = {
   created_at: string;
   done_at: string | null;
 };
+
+type TodoContextType = {
+  todos: Todo[];
+  setTodos: (todos: React.SetStateAction<Todo[]>) => void;
+};
