@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import TodoForm from "@/components/todos/TodoForm";
+import CreateTodoForm from "@/components/todos/CreateTodoForm";
 import TodoList from "@/components/todos/TodoList";
 import { Separator } from "@/components/ui/separator";
 import TodoProvider from "@/components/providers/TodoProvider";
@@ -46,7 +46,7 @@ export default async function TodosPage() {
             orientation="horizontal"
             className="mx-2 block md:hidden"
           />
-          <TodoForm />
+          <CreateTodoForm />
           <Separator
             orientation="vertical"
             className="min-h-[calc(100vh-4rem)] ml-5 hidden md:block"

@@ -1,13 +1,3 @@
-"use client";
-
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
-
 import {
   Form,
   FormControl,
@@ -17,10 +7,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { createClient } from "@/utils/supabase/client";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { useTodos } from "@/lib/hooks";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+
+import type { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z.object({
   title: z.string().min(2),
@@ -30,37 +21,17 @@ const formSchema = z.object({
     .max(5, { message: "Highest priority is 5" }),
 });
 
-const TodoForm = () => {
-  const [loading, setLoading] = useState(false);
-  const { setTodos } = useTodos();
+type TodoFormContentProps = {
+  form: UseFormReturn<z.infer<typeof formSchema>>;
+  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>;
+  children: React.ReactNode;
+};
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      priority: 1,
-    },
-  });
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setLoading(true);
-    const supabase = createClient();
-
-    const { data: newTodo, error } = await supabase
-      .from("todos")
-      .insert(values)
-      .select();
-
-    if (error) {
-      form.setError("root", error);
-      setLoading(false);
-      return;
-    } else {
-      setTodos((prev) => [...prev, newTodo[0]]);
-    }
-    setLoading(false);
-  };
-
+const TodoFormContent = ({
+  form,
+  onSubmit,
+  children,
+}: TodoFormContentProps) => {
   return (
     <Form {...form}>
       <form
@@ -105,13 +76,10 @@ const TodoForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Submit
-        </Button>
+        {children}
       </form>
     </Form>
   );
 };
 
-export default TodoForm;
+export default TodoFormContent;

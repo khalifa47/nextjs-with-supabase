@@ -37,7 +37,12 @@ const TodoItem = ({ todoItem }: { todoItem: Todo }) => {
       <LoadingIconButton id={id} purpose={done_at ? "undo" : "check"} />
       <p className="flex-1">{title}</p>
       <div className="space-x-1">
-        <LoadingIconButton id={id} purpose="edit" />
+        <LoadingIconButton
+          id={id}
+          purpose="edit"
+          title={title}
+          priority={priority}
+        />
         <LoadingIconButton id={id} purpose="delete" />
       </div>
     </div>

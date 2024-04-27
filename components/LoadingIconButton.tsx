@@ -10,26 +10,37 @@ import {
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useTodos } from "@/lib/hooks";
+import { Dialog, DialogTrigger } from "./ui/dialog";
+import EditTodoDialog from "./todos/EditTodoDialog";
 
 type Purpose = "check" | "edit" | "delete" | "undo";
 
 type Props = {
   id: string;
   purpose: Purpose;
+  title?: string;
+  priority?: number;
 };
 
-const LoadingIconButton = ({ id, purpose }: Props) => {
+const LoadingIconButton = ({ id, purpose, title, priority }: Props) => {
   const { setTodos } = useTodos();
 
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
 
-  const handleDoUndo = async (undo?: boolean) => {
+  const handleEdit = async (
+    data?: { title: string; priority: number },
+    undo?: boolean
+  ) => {
+    const toUpdate = data
+      ? { title: data.title, priority: data.priority }
+      : { done_at: undo ? null : new Date() };
+
     setLoading(true);
 
     const { data: newTodo, error } = await supabase
       .from("todos")
-      .update({ done_at: undo ? null : new Date() })
+      .update(toUpdate)
       .eq("id", id)
       .select();
 
@@ -63,23 +74,17 @@ const LoadingIconButton = ({ id, purpose }: Props) => {
     setLoading(false);
   };
 
-  const temp = () => {
-    setLoading(true);
-    setTimeout(() => setLoading(false), 2000);
-    console.log("load");
-  };
-
   const getMap = (purpose: Purpose) => {
     switch (purpose) {
       case "check":
         return {
           icon: <CheckCircleIcon className="h-4 w-4" />,
-          handler: () => handleDoUndo(),
+          handler: () => handleEdit(),
         };
       case "edit":
         return {
           icon: <EditIcon className="h-4 w-4" />,
-          handler: () => temp(), //TODO: do a modal
+          handler: null,
         };
       case "delete":
         return {
@@ -89,7 +94,7 @@ const LoadingIconButton = ({ id, purpose }: Props) => {
       case "undo":
         return {
           icon: <Undo2Icon className="h-4 w-4" />,
-          handler: () => handleDoUndo(true),
+          handler: () => handleEdit(undefined, true),
         };
 
       default:
@@ -99,13 +104,13 @@ const LoadingIconButton = ({ id, purpose }: Props) => {
 
   const mapper = getMap(purpose);
 
-  return (
+  const ActionButton = () => (
     <Button
       variant="ghost"
       size="icon"
       className="rounded-full h-6 w-6"
       disabled={loading}
-      onClick={mapper?.handler}
+      onClick={mapper?.handler!}
     >
       {loading ? (
         <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
@@ -113,6 +118,22 @@ const LoadingIconButton = ({ id, purpose }: Props) => {
         mapper?.icon
       )}
     </Button>
+  );
+
+  return purpose === "edit" ? (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon" className="rounded-full h-6 w-6">
+          {mapper?.icon}
+        </Button>
+      </DialogTrigger>
+      <EditTodoDialog
+        initialValues={{ title, priority }}
+        handleEdit={handleEdit}
+      />
+    </Dialog>
+  ) : (
+    <ActionButton />
   );
 };
 
