@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 
 export default async function AuthButton() {
   const supabase = createClient();
@@ -19,7 +19,7 @@ export default async function AuthButton() {
   };
 
   return user ? (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center justify-between">
       Hey, {user.email?.split("@")[0]}!
       <form action={signOut}>
         <Button>Logout</Button>
@@ -28,7 +28,9 @@ export default async function AuthButton() {
   ) : (
     <Link
       href="/login"
-      className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
+      className={`${buttonVariants({
+        variant: "outline",
+      })} border-primary text-primary hover:bg-primary hover:text-primary-foreground float-right`}
     >
       Login
     </Link>
